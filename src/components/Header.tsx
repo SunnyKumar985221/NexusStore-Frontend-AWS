@@ -3,8 +3,7 @@ import '../assets/css/header.scss';
 import logo from '../assets/images/logo.png';
 import searchicon from '../assets/images/search.png';
 import headerOffer from '../assets/images/headerOffer.png';
-import cart from '../assets/images/cart.png';
-import { useState, ChangeEvent, useEffect } from 'react';
+import { useState, ChangeEvent } from 'react';
 import { categoriesData, productData } from "../assets/dummydata/data";
 import { ProductData } from '../interfaces/interface';
 
@@ -15,9 +14,9 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchData, setSearchData] = useState<ProductData[] | null>(null);
-  const [active, setActive] = useState<boolean>(true);
-  const [openCart, setOpenCart] = useState<boolean>(false);
-  const [openWishlist, setOpenWishlist] = useState<boolean>(false);
+  // const [active, setActive] = useState<boolean>(true);
+  // const [openCart, setOpenCart] = useState<boolean>(false);
+  // const [openWishlist, setOpenWishlist] = useState<boolean>(false);
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const term = e.target.value;
@@ -29,16 +28,16 @@ const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
     setSearchData(term ? filteredProducts : null);
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setActive(window.scrollY > 70);
-    };
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     setActive(window.scrollY > 70);
+  //   };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, []);
 
   return (
     <>
