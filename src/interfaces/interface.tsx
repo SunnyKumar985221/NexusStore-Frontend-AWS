@@ -29,3 +29,11 @@ export interface ProductData {
     stock: number;
     reviews: Reviews[]
 }
+
+export interface SignupForm {
+    name: string | null,
+    email: string | null,
+    password: string | null,
+    cpassword: string | null,
+    file: File | null
+}
