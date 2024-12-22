@@ -1,0 +1,21 @@
+.loader__container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: relative;
+
+    svg {
+        font-size: 140px;
+        animation: rotate 2s linear infinite;
+    }
+
+    @keyframes rotate {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+}

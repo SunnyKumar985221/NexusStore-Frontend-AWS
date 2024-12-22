@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { Link, Navigate, NavLink } from 'react-router-dom';
 import '../assets/css/header.scss';
 import logo from '../assets/images/logo.png';
 import searchicon from '../assets/images/search.png';
@@ -27,7 +27,9 @@ const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
     );
     setSearchData(term ? filteredProducts : null);
   };
-
+  // const dashboard = () => {
+  //   return <Navigate to='/dashboard'></Navigate>
+  // }
   // useEffect(() => {
   //   const handleScroll = () => {
   //     setActive(window.scrollY > 70);
@@ -128,9 +130,11 @@ const Header: React.FC<HeaderProps> = ({ activeHeading }) => {
 
         {/* Other Icons */}
         <div className="othericons">
+          {/* <i className="far fa-heart" onClick={dashboard}><span>Dashboard</span></i> */}
           <i className="far fa-heart"><span>3</span></i>
           <i className="fas fa-shopping-cart">5</i>
-          <i className="far fa-user-circle"></i>
+          <NavLink to='/dashboard'>Dshboard</NavLink>
+          <NavLink to='/login'><i className="far fa-user-circle"></i></NavLink>
         </div>
       </div>
     </>

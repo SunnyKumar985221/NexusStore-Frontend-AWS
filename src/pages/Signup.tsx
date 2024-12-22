@@ -1,9 +1,11 @@
-import React, { useReducer, useState } from 'react';
+import React, { useReducer, useState } from 'react'; 
 import axios from 'axios';
 import '../assets/css/Login.scss';
 import { CgProfile } from "react-icons/cg";
 import { FaPlus } from "react-icons/fa";
 import type { SignupForm } from '../interfaces/interface';
+import { successAlert, errorAlert } from '../utilities/alert';
+import { signUp, confirmSignUp } from 'aws-amplify/auth';
 
 const Signup: React.FC = () => {
     const initialState: SignupForm = {
@@ -11,7 +13,8 @@ const Signup: React.FC = () => {
         email: null,
         password: null,
         cpassword: null,
-        file: null
+        file: null,
+        code: '' // New field for confirmation code
     };
 
     const reducers = (state: SignupForm, action: any) => {
@@ -28,7 +31,8 @@ const Signup: React.FC = () => {
 
     const [formInput, dispatch] = useReducer(reducers, initialState);
     const [fileName, setFile] = useState<File | null>(null);
- 
+    const [isConfirming, setIsConfirming] = useState(false); // To toggle between signup and confirmation forms
+
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         dispatch({
             type: 'UPDATE_FIELD',
@@ -36,11 +40,10 @@ const Signup: React.FC = () => {
             value: event.target.value
         });
     };
-    console.log(formInput)
+
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
             setFile(event.target.files[0]);
-            console.log("event.target.name", event.target.name);
             dispatch({
                 type: 'UPDATE_FIELD',
                 field: event.target.name,
@@ -56,30 +59,38 @@ const Signup: React.FC = () => {
         }
     };
 
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        let username: string = formInput.email ?? 'default@example.com';
+        let password: string = formInput.password ?? 'defaultPassword';
 
-        let formdata = new FormData();
-
-        formdata.append("name", formInput.name ?? 'sunny');
-        formdata.append("email", formInput.email ?? 'null');
-        formdata.append("password", formInput.password ?? 'null');
-        formdata.append("cpassword", formInput.cpassword ?? 'null');
-        // if (formInput.file) formdata.append("file", formInput.file);
+        let options = {
+            userAttributes: {
+                gender:'male'
+            }
+        };
 
         try {
-            const response = await axios.post('https://2vdglfhy25.execute-api.ap-south-1.amazonaws.com/dev/signup', formInput );
-            console.log("error hai", response);
-            // Check the response status or structure
-            if (response.status === 200) {
-                console.log('Send successfully');
-            } else {
-                console.log('Unexpected response status:', response.status);
-            }
-        } catch (error) {
-            console.error('Error occurred during submission:', error);
+            await signUp({ username, password,  options });
+            successAlert('Signup successful! Please check your email for the confirmation code.');
+            setIsConfirming(true); // Switch to confirmation form
+        } catch (error: any) {
+            errorAlert(error.message);
         }
+    };
+
+    const handleConfirmation = async (e: React.FormEvent<HTMLFormElement>) => {
+        // e.preventDefault();
+        // let username: string = formInput.email ?? 'default@example.com';
+        // let code: string = formInput.code ?? '';
+
+        // try {
+        //     await confirmSignUp({username});
+        //     successAlert('Account confirmed successfully! You can now log in.');
+        //     // Redirect or take further actions
+        // } catch (error: any) {
+        //     errorAlert(error.message);
+        // }
     };
 
     return (
@@ -97,20 +108,26 @@ const Signup: React.FC = () => {
                     )}
                     <FaPlus className='profileImageUpload' />
                 </div>
-                <form onSubmit={handleSubmit}>
-                    <input type="file" id="file-upload" name="file" accept="image/*" hidden onChange={handleFileChange} />
-                    <input type="text" name="name" placeholder="Full Name" onChange={handleInputChange} />
-                    <input type="email" name="email" placeholder="Email Address or Phone Number" onChange={handleInputChange} />
-                    <input type="password" name="password" placeholder="Password" onChange={handleInputChange} />
-                    <input type="password" name="cpassword" placeholder="Confirm Password" onChange={handleInputChange} />
-                    <div><button type="submit">Sign Up</button></div>
-                    <div style={{ color: "black" }}>Already have an account?</div>
-                    <button type="button" className="register"><a href="/sign-up">Go To Login</a></button>
-                </form>
+                {!isConfirming ? (
+                    <form onSubmit={handleSignup}>
+                        <input type="file" id="file-upload" name="file" accept="image/*" hidden onChange={handleFileChange} />
+                        <input type="text" name="name" placeholder="Full Name" onChange={handleInputChange} />
+                        <input type="email" name="email" placeholder="Email Address" onChange={handleInputChange} />
+                        <input type="password" name="password" placeholder="Password" onChange={handleInputChange} />
+                        <input type="password" name="cpassword" placeholder="Confirm Password" onChange={handleInputChange} />
+                        <div><button type="submit">Sign Up</button></div>
+                        <div style={{ color: "black" }}>Already have an account?</div>
+                        <button type="button" className="register"><a href="/sign-up">Go To Login</a></button>
+                    </form>
+                ) : (
+                    <form onSubmit={handleConfirmation}>
+                        <input type="text" name="code" placeholder="Confirmation Code" onChange={handleInputChange} />
+                        <div><button type="submit">Confirm</button></div>
+                    </form>
+                )}
             </div>
-
-        </div >
+        </div>
     );
-}
+};
 
 export default Signup;

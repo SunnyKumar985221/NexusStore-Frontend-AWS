@@ -40,7 +40,7 @@ const Cover = () => {
             });
         });
 
-        initiateSlide(); // Start the slide initially
+        // initiateSlide(); // Start the slide initially
 
         return () => {
             if (autoSlide.current) clearInterval(autoSlide.current);

@@ -411,11 +411,26 @@
     z-index: 999;
   }
 }
+
 .othericons {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 20px;
   font-size: 30px;
-  font-weight: 100 !important;
+
+
+
+  i {
+    cursor: pointer;
+    transition: all 0.1s;
+    will-change: transform;
+
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+  }
+
 }

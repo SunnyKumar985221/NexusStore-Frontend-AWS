@@ -35,5 +35,16 @@ export interface SignupForm {
     email: string | null,
     password: string | null,
     cpassword: string | null,
-    file: File | null
+    file: File | null,
+    code:string | null
+}
+
+export interface ProtectedRouteProps {
+    isAuthenticated: boolean;
+}
+
+export interface Auth {
+    loading: boolean;
+    isToken: boolean;
+    error: string | null;
 }
